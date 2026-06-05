@@ -1,0 +1,21 @@
+name = "fastmail-plugin-trmnl"
+main = "src/worker.ts"
+compatibility_date = "2025-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+SOURCE_MODE = "caldav"
+TIMEZONE = "America/Denver"
+VIEW_MODE = "rolling_week"
+START_HOUR = "8"
+END_HOUR = "21"
+SHOW_CALENDAR_NAMES = "true"
+FREE_BUSY_ONLY = "false"
+FETCH_TIMEOUT_MS = "10000"
+
+[[kv_namespaces]]
+binding = "CALENDAR_CACHE"
+id = "replace-with-calendar-cache-kv-id"
+
+[triggers]
+crons = ["*/30 * * * *"]

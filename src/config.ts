@@ -44,41 +44,43 @@ function buildSources(urlValue: unknown, namesValue: unknown): CalendarSource[] 
   }));
 }
 
-export function buildConfig(query: Record<string, unknown> = {}): CalendarConfig {
+export type ConfigEnv = Record<string, unknown>;
+
+export function buildConfig(query: Record<string, unknown> = {}, env: ConfigEnv = process.env): CalendarConfig {
   const sources = buildSources(
-    query.ics_urls ?? query.ics_url ?? process.env.ICS_URLS,
-    query.calendar_names ?? process.env.CALENDAR_NAMES,
+    query.ics_urls ?? query.ics_url ?? env.ICS_URLS,
+    query.calendar_names ?? env.CALENDAR_NAMES,
   );
-  const caldavUsername = readString(query.fastmail_username ?? query.caldav_username ?? process.env.FASTMAIL_USERNAME ?? process.env.CALDAV_USERNAME);
+  const caldavUsername = readString(query.fastmail_username ?? query.caldav_username ?? env.FASTMAIL_USERNAME ?? env.CALDAV_USERNAME);
   const caldavPassword = readString(
     query.fastmail_app_password ??
       query.caldav_password ??
-      process.env.FASTMAIL_APP_PASSWORD ??
-      process.env.CALDAV_PASSWORD,
+      env.FASTMAIL_APP_PASSWORD ??
+      env.CALDAV_PASSWORD,
   );
   const sourceModeDefault: SourceMode = caldavUsername && caldavPassword ? "caldav" : "ics";
-  const sourceMode = sourceModeSchema.catch(sourceModeDefault).parse(query.source_mode ?? process.env.SOURCE_MODE) as SourceMode;
+  const sourceMode = sourceModeSchema.catch(sourceModeDefault).parse(query.source_mode ?? env.SOURCE_MODE) as SourceMode;
 
-  const startHour = Math.max(0, Math.min(23, readNumber(query.start_hour ?? process.env.START_HOUR, 8)));
-  const endHour = Math.max(startHour + 1, Math.min(24, readNumber(query.end_hour ?? process.env.END_HOUR, 21)));
-  const viewMode = viewModeSchema.catch("rolling_week").parse(query.view_mode ?? process.env.VIEW_MODE) as ViewMode;
+  const startHour = Math.max(0, Math.min(23, readNumber(query.start_hour ?? env.START_HOUR, 8)));
+  const endHour = Math.max(startHour + 1, Math.min(24, readNumber(query.end_hour ?? env.END_HOUR, 21)));
+  const viewMode = viewModeSchema.catch("rolling_week").parse(query.view_mode ?? env.VIEW_MODE) as ViewMode;
 
   return {
     sourceMode,
     sources,
     caldavServer:
-      readString(query.caldav_server ?? process.env.CALDAV_SERVER ?? query.fastmail_caldav_server) ??
+      readString(query.caldav_server ?? env.CALDAV_SERVER ?? query.fastmail_caldav_server) ??
       "https://caldav.fastmail.com/",
     caldavUsername,
     caldavPassword,
-    calendarInclude: splitCsv(query.calendar_include ?? process.env.CALENDAR_INCLUDE),
-    calendarExclude: splitCsv(query.calendar_exclude ?? process.env.CALENDAR_EXCLUDE),
-    timezone: readString(query.timezone ?? process.env.TIMEZONE) ?? "America/Denver",
+    calendarInclude: splitCsv(query.calendar_include ?? env.CALENDAR_INCLUDE),
+    calendarExclude: splitCsv(query.calendar_exclude ?? env.CALENDAR_EXCLUDE),
+    timezone: readString(query.timezone ?? env.TIMEZONE) ?? "America/Denver",
     viewMode,
     startHour,
     endHour,
-    showCalendarNames: readBool(query.show_calendar_names ?? process.env.SHOW_CALENDAR_NAMES, true),
-    freeBusyOnly: readBool(query.free_busy_only ?? process.env.FREE_BUSY_ONLY, false),
-    fetchTimeoutMs: readNumber(query.fetch_timeout_ms ?? process.env.FETCH_TIMEOUT_MS, 10000),
+    showCalendarNames: readBool(query.show_calendar_names ?? env.SHOW_CALENDAR_NAMES, true),
+    freeBusyOnly: readBool(query.free_busy_only ?? env.FREE_BUSY_ONLY, false),
+    fetchTimeoutMs: readNumber(query.fetch_timeout_ms ?? env.FETCH_TIMEOUT_MS, 10000),
   };
 }

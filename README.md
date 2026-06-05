@@ -78,6 +78,154 @@ Set the TRMNL private plugin polling URL to:
 https://your-service.example.com/events
 ```
 
+## Cloudflare Workers
+
+Cloudflare Workers are the preferred deployment target for a TRMNL private plugin because the Worker can cache the generated calendar JSON in KV and serve polling requests quickly.
+
+### 1. Create KV
+
+Install dependencies first so the project-local Wrangler CLI is available:
+
+```sh
+npm install
+```
+
+```sh
+npm exec -- wrangler kv namespace create CALENDAR_CACHE
+```
+
+Copy the returned namespace id into [wrangler.toml](wrangler.toml):
+
+```toml
+[[kv_namespaces]]
+binding = "CALENDAR_CACHE"
+id = "your-kv-namespace-id"
+```
+
+The checked-in `wrangler.toml` intentionally contains a placeholder id; `npm run deploy:worker` will not work until that value is replaced.
+
+For local Worker development, you can copy the example vars file:
+
+```sh
+cp .dev.vars.example .dev.vars
+```
+
+Then edit `.dev.vars`. Do not commit `.dev.vars`.
+
+### 2. Configure Secrets
+
+```sh
+npm exec -- wrangler secret put FASTMAIL_USERNAME
+npm exec -- wrangler secret put FASTMAIL_APP_PASSWORD
+npm exec -- wrangler secret put TRMNL_POLLING_TOKEN
+npm exec -- wrangler secret put REFRESH_TOKEN
+```
+
+Non-secret defaults live in the `[vars]` section of [wrangler.toml](wrangler.toml). You can edit those values directly:
+
+```toml
+[vars]
+SOURCE_MODE = "caldav"
+TIMEZONE = "America/Denver"
+VIEW_MODE = "rolling_week"
+START_HOUR = "8"
+END_HOUR = "21"
+```
+
+Optional CalDAV filters can be set as dashboard variables or secrets:
+
+```sh
+npm exec -- wrangler secret put CALENDAR_INCLUDE
+npm exec -- wrangler secret put CALENDAR_EXCLUDE
+```
+
+For ICS fallback mode, set `SOURCE_MODE = "ics"` and configure these as secrets because ICS URLs often act like bearer tokens:
+
+```sh
+npm exec -- wrangler secret put ICS_URLS
+npm exec -- wrangler secret put CALENDAR_NAMES
+```
+
+For optional webhook push, configure an HTTPS webhook URL:
+
+```sh
+npm exec -- wrangler secret put TRMNL_WEBHOOK_URL
+```
+
+`TRMNL_WEBHOOK_URL` must use `https://`; HTTP webhook URLs are ignored and recorded as a non-fatal refresh warning.
+
+### 3. Run Worker Locally
+
+```sh
+npm run dev:worker
+```
+
+In another terminal:
+
+```sh
+curl http://localhost:8787/health
+curl -H "authorization: bearer <TRMNL_POLLING_TOKEN>" http://localhost:8787/events
+curl -X POST -H "authorization: bearer <REFRESH_TOKEN>" http://localhost:8787/refresh
+curl -H "authorization: bearer <REFRESH_TOKEN>" http://localhost:8787/status
+```
+
+Wrangler does not run cron triggers automatically in normal local dev. To test the scheduled handler:
+
+```sh
+npm run dev:worker -- --test-scheduled
+curl http://localhost:8787/__scheduled
+```
+
+### 4. Deploy
+
+```sh
+npm run deploy:worker
+```
+
+The Worker exposes:
+
+```text
+GET  /events
+GET  /calendar
+POST /refresh
+GET  /health
+GET  /status
+```
+
+`GET /events` and `GET /calendar` return the cached TRMNL JSON. If the cache is missing, the Worker attempts one synchronous refresh. `POST /refresh` performs a manual refresh. `GET /health` returns public cache freshness metadata without error details. `GET /status` requires `REFRESH_TOKEN` and includes sanitized diagnostic details. The scheduled cron in [wrangler.toml](wrangler.toml) refreshes KV every 30 minutes.
+
+### 5. TRMNL Setup
+
+In your TRMNL Private Plugin:
+
+- Strategy: `Polling`
+- Polling URL:
+
+```text
+https://fastmail-plugin-trmnl.<your-subdomain>.workers.dev/events
+```
+
+- Polling Verb: `GET`
+- Polling Headers:
+
+```text
+authorization=bearer <TRMNL_POLLING_TOKEN>
+```
+
+Never put `TRMNL_POLLING_TOKEN`, `REFRESH_TOKEN`, Fastmail credentials, or ICS URLs in the query string.
+
+Paste [trmnl/week-grid.liquid](trmnl/week-grid.liquid) into the plugin markup editor and click **Force Refresh**.
+
+### Optional TRMNL Webhook Push
+
+Polling remains the primary integration. If `TRMNL_WEBHOOK_URL` is set, successful scheduled/manual refreshes also POST:
+
+```json
+{ "merge_variables": {} }
+```
+
+where `merge_variables` contains the same payload returned by `/events`.
+
 ## TRMNL Private Plugin
 
 1. Publish the backend somewhere TRMNL can reach it.

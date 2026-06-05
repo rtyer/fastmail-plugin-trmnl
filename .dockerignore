@@ -4,3 +4,6 @@ npm-debug.log
 .git
 .DS_Store
 coverage
+.env
+.dev.vars*
+.wrangler

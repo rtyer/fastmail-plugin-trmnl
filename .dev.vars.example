@@ -1,0 +1,14 @@
+SOURCE_MODE=caldav
+FASTMAIL_USERNAME=person@example.com
+FASTMAIL_APP_PASSWORD=app-specific-password
+TRMNL_POLLING_TOKEN=replace-with-random-token
+REFRESH_TOKEN=replace-with-random-admin-token
+TIMEZONE=America/Denver
+VIEW_MODE=rolling_week
+START_HOUR=8
+END_HOUR=21
+SHOW_CALENDAR_NAMES=true
+FREE_BUSY_ONLY=false
+CALENDAR_INCLUDE=
+CALENDAR_EXCLUDE=
+FETCH_TIMEOUT_MS=10000

@@ -4,3 +4,6 @@ coverage
 .DS_Store
 npm-debug.log
 .env
+.dev.vars*
+!.dev.vars.example
+.wrangler
