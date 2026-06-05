@@ -1,0 +1,41 @@
+{
+  "name": "fastmail-plugin-trmnl",
+  "version": "1.0.0",
+  "description": "TRMNL private plugin backend for Fastmail ICS calendars in a week grid.",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.build.json",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "keywords": [
+    "trmnl",
+    "fastmail",
+    "calendar",
+    "ical",
+    "ics",
+    "e-ink"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "author": "",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "express": "^5.2.1",
+    "luxon": "^3.7.2",
+    "node-ical": "^0.26.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/luxon": "^3.7.1",
+    "@types/node": "^25.9.2",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
+  }
+}
