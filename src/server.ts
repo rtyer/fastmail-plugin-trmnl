@@ -13,9 +13,15 @@ export function createServer() {
   const calendarHandler: express.RequestHandler = async (req, res, next) => {
     try {
       const config = buildConfig(req.query);
-      if (config.sources.length === 0) {
+      if (config.sourceMode === "ics" && config.sources.length === 0) {
         res.status(400).json({
-          error: "No calendars configured. Set ICS_URLS or pass ics_urls in the polling URL.",
+          error: "No calendars configured. Set FASTMAIL_USERNAME/FASTMAIL_APP_PASSWORD for CalDAV mode or set ICS_URLS for ICS mode.",
+        });
+        return;
+      }
+      if (config.sourceMode === "caldav" && (!config.caldavUsername || !config.caldavPassword)) {
+        res.status(400).json({
+          error: "CalDAV mode requires FASTMAIL_USERNAME and FASTMAIL_APP_PASSWORD.",
         });
         return;
       }

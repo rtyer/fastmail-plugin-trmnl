@@ -4,7 +4,11 @@ import { buildCalendarPayloadFromIcs } from "../src/calendar.js";
 import type { CalendarConfig } from "../src/types.js";
 
 const baseConfig: CalendarConfig = {
+  sourceMode: "ics",
   sources: [],
+  caldavServer: "https://caldav.fastmail.com/",
+  calendarInclude: [],
+  calendarExclude: [],
   timezone: "America/Denver",
   viewMode: "rolling_week",
   startHour: 8,

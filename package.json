@@ -25,9 +25,11 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
+    "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "luxon": "^3.7.2",
     "node-ical": "^0.26.1",
+    "tsdav": "^2.2.2",
     "zod": "^4.4.3"
   },
   "devDependencies": {

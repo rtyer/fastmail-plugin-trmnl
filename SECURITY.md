@@ -10,6 +10,14 @@ Published ICS URLs commonly act like bearer tokens. Anyone with the URL may be a
 - Use `FREE_BUSY_ONLY=true` if the TRMNL screen should hide event titles.
 - Rotate or unpublish a calendar URL if it is accidentally shared.
 
+## Fastmail CalDAV Credentials
+
+The preferred Fastmail mode uses CalDAV with an app-specific password. Store `FASTMAIL_USERNAME` and `FASTMAIL_APP_PASSWORD` only in your deployment secret manager or local `.env` file.
+
+- Do not commit real app passwords.
+- Create an app password scoped to calendar access when possible.
+- Rotate the app password if it is exposed.
+
 ## Reporting Vulnerabilities
 
 Please open a private security advisory on GitHub if available, or contact the repository maintainer directly. Avoid posting real calendar URLs, event contents, or deployment secrets in public issues.

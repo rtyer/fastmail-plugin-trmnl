@@ -1,6 +1,7 @@
 import * as ical from "node-ical";
 import { DateTime } from "luxon";
 import type { DateWithTimeZone, EventInstance, ParameterValue, VEvent } from "node-ical";
+import { fetchCalDavIcsFeeds, type IcsFeed } from "./caldav.js";
 import type {
   AllDayEvent,
   CalendarConfig,
@@ -9,11 +10,6 @@ import type {
   HourMarker,
   TimedEvent,
 } from "./types.js";
-
-type IcsFeed = {
-  name: string;
-  ics: string;
-};
 
 type RawEvent = {
   uid: string;
@@ -51,13 +47,28 @@ export async function buildCalendarPayload(
   now: DateTime = DateTime.now().setZone(config.timezone),
   fetchText: FetchText = fetchIcsText,
 ): Promise<CalendarPayload> {
-  const feeds = await Promise.all(
+  const zonedNow = now.setZone(config.timezone);
+  const range = getRange(config.viewMode, zonedNow);
+  const rangeEndExclusive = range.start.plus({ days: range.dayCount });
+  const feeds =
+    config.sourceMode === "caldav"
+      ? await fetchCalDavIcsFeeds(config, range.start.minus({ days: 1 }), rangeEndExclusive.plus({ days: 1 }))
+      : await fetchConfiguredIcsFeeds(config, fetchText);
+
+  return buildCalendarPayloadFromIcs(feeds, config, now);
+}
+
+async function fetchConfiguredIcsFeeds(config: CalendarConfig, fetchText: FetchText): Promise<IcsFeed[]> {
+  if (config.sources.length === 0) {
+    throw new Error("ICS mode requires ICS_URLS or ics_urls.");
+  }
+
+  return Promise.all(
     config.sources.map(async (source) => ({
       name: source.name,
       ics: await fetchText(source.url, config.fetchTimeoutMs),
     })),
   );
-  return buildCalendarPayloadFromIcs(feeds, config, now);
 }
 
 export function buildCalendarPayloadFromIcs(
@@ -86,6 +97,7 @@ export function buildCalendarPayloadFromIcs(
     synced_at: zonedNow.toUTC().toISO({ suppressMilliseconds: true }) ?? zonedNow.toUTC().toISO() ?? "",
     synced_label: "just now",
     synced_ago_minutes: 0,
+    source_mode: config.sourceMode,
     timezone: config.timezone,
     view_mode: config.viewMode,
     start_hour: config.startHour,

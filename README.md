@@ -1,12 +1,13 @@
 # Fastmail TRMNL Week Grid
 
-A small TypeScript backend plus TRMNL Liquid template for showing multiple published Fastmail calendar ICS feeds in a single Google-Calendar-style week grid.
+A small TypeScript backend plus TRMNL Liquid template for showing Fastmail calendars in a single Google-Calendar-style week grid.
 
-Published ICS URLs often work like bearer tokens. Treat them as secrets: do not commit real URLs, do not paste real URLs into screenshots, and prefer server-side environment variables over query strings in production.
+The preferred source is Fastmail CalDAV: one Fastmail username plus an app-specific password discovers all calendars automatically. Published ICS URLs are still supported as a fallback, but they often work like bearer tokens. Treat all calendar URLs and app passwords as secrets.
 
 ## Features
 
-- Fetches multiple Fastmail published ICS URLs.
+- Discovers and fetches Fastmail calendars via CalDAV.
+- Keeps published ICS URL support as a fallback mode.
 - Parses `VEVENT`, timed events, all-day events, multi-day events, recurrence rules, EXDATE/RECURRENCE-ID overrides, timezones, duplicate UIDs, and cancelled events.
 - Normalizes events into TRMNL-friendly JSON.
 - Supports `rolling_week`, `work_week`, and `three_day` layouts.
@@ -19,7 +20,13 @@ Set these environment variables on the backend:
 
 | Variable | Default | Notes |
 | --- | --- | --- |
-| `ICS_URLS` | required | Comma-separated Fastmail published ICS URLs. |
+| `SOURCE_MODE` | auto | `caldav` or `ics`. Defaults to `caldav` when Fastmail credentials are present, otherwise `ics`. |
+| `FASTMAIL_USERNAME` | required for CalDAV | Full Fastmail username/email address. |
+| `FASTMAIL_APP_PASSWORD` | required for CalDAV | Fastmail app-specific password. |
+| `CALDAV_SERVER` | `https://caldav.fastmail.com/` | CalDAV endpoint. |
+| `CALENDAR_INCLUDE` | empty | Optional comma-separated case-insensitive substrings of calendar names to include. |
+| `CALENDAR_EXCLUDE` | empty | Optional comma-separated case-insensitive substrings of calendar names to exclude. |
+| `ICS_URLS` | required for ICS mode | Comma-separated published ICS URLs. |
 | `CALENDAR_NAMES` | `Calendar 1`, etc. | Comma-separated display names matching `ICS_URLS`. |
 | `TIMEZONE` | `America/Denver` | Display timezone. |
 | `VIEW_MODE` | `rolling_week` | `rolling_week`, `work_week`, `three_day`, or `agenda`. |
@@ -30,12 +37,14 @@ Set these environment variables on the backend:
 | `FETCH_TIMEOUT_MS` | `10000` | Per-feed fetch timeout. |
 | `PORT` | `3000` | HTTP port. |
 
-The same options can be passed as lowercase query parameters for local testing, for example `?view_mode=three_day&start_hour=7`. Avoid putting real ICS URLs in query strings for production deployments because URLs are commonly logged by proxies and hosting platforms.
+The same options can be passed as lowercase query parameters for local testing, for example `?view_mode=three_day&start_hour=7`. Avoid putting real ICS URLs or passwords in query strings for production deployments because URLs are commonly logged by proxies and hosting platforms.
 
 ## Run Locally
 
 ```sh
 npm install
+cp .env.example .env
+# Edit .env with your Fastmail username and app-specific password.
 npm run dev
 ```
 
@@ -56,8 +65,9 @@ curl 'http://localhost:3000/events?ics_urls=https%3A%2F%2Fexample.com%2Fcalendar
 ```sh
 docker build -t fastmail-plugin-trmnl .
 docker run --rm -p 3000:3000 \
-  -e ICS_URLS='https://calendar.example.com/family.ics,https://calendar.example.com/sports.ics' \
-  -e CALENDAR_NAMES='Family,Sports' \
+  -e SOURCE_MODE='caldav' \
+  -e FASTMAIL_USERNAME='person@example.com' \
+  -e FASTMAIL_APP_PASSWORD='app-specific-password' \
   -e TIMEZONE='America/Denver' \
   fastmail-plugin-trmnl
 ```
@@ -85,6 +95,7 @@ The `/events` and `/calendar` endpoints return:
 {
   "synced_at": "2026-06-05T18:00:00Z",
   "synced_label": "just now",
+  "source_mode": "caldav",
   "timezone": "America/Denver",
   "view_mode": "rolling_week",
   "start_hour": 8,

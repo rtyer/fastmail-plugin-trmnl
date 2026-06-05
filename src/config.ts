@@ -1,7 +1,8 @@
 import { z } from "zod";
-import type { CalendarConfig, CalendarSource, ViewMode } from "./types.js";
+import type { CalendarConfig, CalendarSource, SourceMode, ViewMode } from "./types.js";
 
 const viewModeSchema = z.enum(["rolling_week", "work_week", "three_day", "agenda"]);
+const sourceModeSchema = z.enum(["caldav", "ics"]);
 
 function readString(value: unknown): string | undefined {
   if (Array.isArray(value)) {
@@ -48,13 +49,30 @@ export function buildConfig(query: Record<string, unknown> = {}): CalendarConfig
     query.ics_urls ?? query.ics_url ?? process.env.ICS_URLS,
     query.calendar_names ?? process.env.CALENDAR_NAMES,
   );
+  const caldavUsername = readString(query.fastmail_username ?? query.caldav_username ?? process.env.FASTMAIL_USERNAME ?? process.env.CALDAV_USERNAME);
+  const caldavPassword = readString(
+    query.fastmail_app_password ??
+      query.caldav_password ??
+      process.env.FASTMAIL_APP_PASSWORD ??
+      process.env.CALDAV_PASSWORD,
+  );
+  const sourceModeDefault: SourceMode = caldavUsername && caldavPassword ? "caldav" : "ics";
+  const sourceMode = sourceModeSchema.catch(sourceModeDefault).parse(query.source_mode ?? process.env.SOURCE_MODE) as SourceMode;
 
   const startHour = Math.max(0, Math.min(23, readNumber(query.start_hour ?? process.env.START_HOUR, 8)));
   const endHour = Math.max(startHour + 1, Math.min(24, readNumber(query.end_hour ?? process.env.END_HOUR, 21)));
   const viewMode = viewModeSchema.catch("rolling_week").parse(query.view_mode ?? process.env.VIEW_MODE) as ViewMode;
 
   return {
+    sourceMode,
     sources,
+    caldavServer:
+      readString(query.caldav_server ?? process.env.CALDAV_SERVER ?? query.fastmail_caldav_server) ??
+      "https://caldav.fastmail.com/",
+    caldavUsername,
+    caldavPassword,
+    calendarInclude: splitCsv(query.calendar_include ?? process.env.CALENDAR_INCLUDE),
+    calendarExclude: splitCsv(query.calendar_exclude ?? process.env.CALENDAR_EXCLUDE),
     timezone: readString(query.timezone ?? process.env.TIMEZONE) ?? "America/Denver",
     viewMode,
     startHour,

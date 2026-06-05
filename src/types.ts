@@ -1,3 +1,4 @@
+export type SourceMode = "caldav" | "ics";
 export type ViewMode = "rolling_week" | "work_week" | "three_day" | "agenda";
 
 export type CalendarSource = {
@@ -6,7 +7,13 @@ export type CalendarSource = {
 };
 
 export type CalendarConfig = {
+  sourceMode: SourceMode;
   sources: CalendarSource[];
+  caldavServer: string;
+  caldavUsername?: string;
+  caldavPassword?: string;
+  calendarInclude: string[];
+  calendarExclude: string[];
   timezone: string;
   viewMode: ViewMode;
   startHour: number;
@@ -58,6 +65,7 @@ export type CalendarPayload = {
   synced_at: string;
   synced_label: string;
   synced_ago_minutes: number;
+  source_mode: SourceMode;
   timezone: string;
   view_mode: ViewMode;
   start_hour: number;
