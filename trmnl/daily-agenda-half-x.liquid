@@ -45,6 +45,13 @@
 
 <style>
   .fdh-layout {
+    --fdh-ink: #111;
+    --fdh-strong: #333;
+    --fdh-muted: #666;
+    --fdh-soft: #999;
+    --fdh-line: #c6c6c6;
+    --fdh-fill: #e6e6e6;
+    --fdh-fill-soft: #f3f3f3;
     height: 100%;
     overflow: hidden;
   }
@@ -56,8 +63,10 @@
   .fdh-day {
     display: inline-block;
     padding: 4px 10px;
-    border: 2px solid #111;
+    border: 2px solid var(--fdh-ink);
     border-radius: 12px;
+    color: var(--fdh-ink);
+    background: var(--fdh-fill-soft);
     font-size: 26px;
     line-height: 32px;
     white-space: nowrap;
@@ -65,7 +74,7 @@
 
   .fdh-day.fdh-today {
     color: #fff;
-    background: #111;
+    background: var(--fdh-ink);
   }
 
   .fdh-list {
@@ -93,13 +102,14 @@
     padding: 7px 10px;
     border-radius: 10px;
     background:
-      radial-gradient(#c8c8c8 1px, transparent 1px) 0 0 / 4px 4px,
-      #eee;
+      radial-gradient(var(--fdh-line) 1px, transparent 1px) 0 0 / 4px 4px,
+      var(--fdh-fill);
+    color: var(--fdh-ink);
     font-weight: 700;
   }
 
   .fdh-item--timed {
-    border-bottom: 2px dotted #c8c8c8;
+    border-bottom: 2px dotted var(--fdh-line);
   }
 
   .fdh-title,
@@ -113,23 +123,25 @@
   }
 
   .fdh-title {
+    color: var(--fdh-ink);
     font-size: 24px;
     line-height: 29px;
   }
 
   .fdh-time {
-    color: #777;
+    color: var(--fdh-muted);
     font-size: 18px;
     line-height: 22px;
     font-weight: 600;
   }
 
   .fdh-description {
+    color: var(--fdh-strong);
     font-size: 17px;
     line-height: 21px;
   }
 
   .fdh-empty {
-    opacity: 0.55;
+    color: var(--fdh-muted);
   }
 </style>

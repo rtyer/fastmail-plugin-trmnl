@@ -140,6 +140,13 @@
 
 <style>
   .fcal-layout {
+    --fcal-ink: #111;
+    --fcal-strong: #333;
+    --fcal-muted: #666;
+    --fcal-soft: #999;
+    --fcal-line: #c6c6c6;
+    --fcal-fill: #e6e6e6;
+    --fcal-fill-soft: #f3f3f3;
     height: 100%;
     overflow: hidden;
   }
@@ -166,8 +173,10 @@
     display: inline-block;
     margin-bottom: 12px;
     padding: 4px 10px;
-    border: 2px solid #111;
+    border: 2px solid var(--fcal-ink);
     border-radius: 12px;
+    color: var(--fcal-ink);
+    background: var(--fcal-fill-soft);
     font-size: 22px;
     line-height: 26px;
     white-space: nowrap;
@@ -175,7 +184,7 @@
 
   .fcal-day-label.fcal-today {
     color: #fff;
-    background: #111;
+    background: var(--fcal-ink);
   }
 
   .fcal-item {
@@ -199,13 +208,14 @@
     padding: 7px 10px;
     border-radius: 10px;
     background:
-      radial-gradient(#c8c8c8 1px, transparent 1px) 0 0 / 4px 4px,
-      #eee;
+      radial-gradient(var(--fcal-line) 1px, transparent 1px) 0 0 / 4px 4px,
+      var(--fcal-fill);
+    color: var(--fcal-ink);
     font-weight: 700;
   }
 
   .fcal-item--timed {
-    border-bottom: 2px dotted #c8c8c8;
+    border-bottom: 2px dotted var(--fcal-line);
   }
 
   .fcal-title,
@@ -219,24 +229,26 @@
   }
 
   .fcal-title {
+    color: var(--fcal-ink);
     font-size: 21px;
     line-height: 25px;
   }
 
   .fcal-time {
-    color: #777;
+    color: var(--fcal-muted);
     font-size: 18px;
     line-height: 22px;
     font-weight: 600;
   }
 
   .fcal-description {
+    color: var(--fcal-strong);
     font-size: 16px;
     line-height: 20px;
   }
 
   .fcal-empty {
-    opacity: 0.55;
+    color: var(--fcal-muted);
   }
 
   .fcal-grid-layout {
@@ -249,9 +261,9 @@
     display: grid;
     grid-template-columns: var(--time-width) repeat(5, minmax(0, 1fr));
     grid-template-rows: 76px 70px minmax(0, 1fr);
-    border-top: 5px solid #111;
-    border-left: 5px solid #111;
-    border-bottom: 5px solid #111;
+    border-top: 5px solid var(--fcal-ink);
+    border-left: 5px solid var(--fcal-ink);
+    border-bottom: 5px solid var(--fcal-ink);
     min-width: 0;
     min-height: 0;
   }
@@ -262,13 +274,13 @@
   .fcal-all-day-cell,
   .fcal-time-labels,
   .fcal-day-column {
-    border-right: 3px solid #555;
+    border-right: 3px solid var(--fcal-muted);
     min-width: 0;
   }
 
   .fcal-corner,
   .fcal-day-head {
-    border-bottom: 5px solid #111;
+    border-bottom: 5px solid var(--fcal-ink);
   }
 
   .fcal-day-head {
@@ -285,13 +297,13 @@
 
   .fcal-day-head.fcal-today-head span {
     color: #fff;
-    background: #111;
+    background: var(--fcal-ink);
     border-radius: 22px;
     padding: 7px 18px;
   }
 
   .fcal-all-day-label {
-    border-bottom: 5px solid #111;
+    border-bottom: 5px solid var(--fcal-ink);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -303,7 +315,7 @@
   }
 
   .fcal-all-day-cell {
-    border-bottom: 5px solid #111;
+    border-bottom: 5px solid var(--fcal-ink);
     padding: 8px 10px;
     overflow: hidden;
   }
@@ -313,9 +325,9 @@
     height: 24px;
     margin-bottom: 4px;
     padding: 1px 8px;
-    border: 2px solid #111;
+    border: 2px solid var(--fcal-ink);
     border-radius: 11px;
-    background: #ddd;
+    background: var(--fcal-fill);
     font-size: 17px;
     line-height: 20px;
     overflow: hidden;
@@ -324,7 +336,7 @@
   }
 
   .fcal-more {
-    background: #fff;
+    background: var(--fcal-fill-soft);
     font-weight: 800;
     text-align: center;
   }
@@ -339,7 +351,7 @@
     position: absolute;
     right: 12px;
     transform: translateY(-50%);
-    color: #222;
+    color: var(--fcal-strong);
     font-size: 23px;
     line-height: 27px;
     font-weight: 800;
@@ -349,16 +361,16 @@
     position: absolute;
     left: 0;
     right: 0;
-    border-top: 2px solid #c8c8c8;
+    border-top: 2px solid var(--fcal-line);
   }
 
   .fcal-event {
     position: absolute;
     min-height: 24px;
     padding: 5px 8px;
-    border: 2px solid #111;
+    border: 2px solid var(--fcal-ink);
     border-radius: 10px;
-    background: #d0d0d0;
+    background: var(--fcal-fill);
     overflow: hidden;
   }
 
