@@ -95,6 +95,7 @@ END:VEVENT
         title: "Practice (10U Bolinger)",
         start_minutes: 1050,
         end_minutes: 1140,
+        time_label: "5:30 pm - 7 pm",
         top_pct: 73.1,
         height_pct: 11.5,
       },

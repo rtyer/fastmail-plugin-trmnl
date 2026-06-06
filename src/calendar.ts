@@ -313,6 +313,7 @@ function makeTimedEvent(event: RawEvent, segmentStart: DateTime, segmentEnd: Dat
     calendar: event.calendar,
     start: segmentStart.toISO({ suppressMilliseconds: true }) ?? "",
     end: segmentEnd.toISO({ suppressMilliseconds: true }) ?? "",
+    time_label: formatTimeRange(segmentStart, segmentEnd),
     start_minutes: startMinutes,
     end_minutes: endMinutes,
     top_pct: roundPct(((clippedStart - visibleStart) / visibleTotal) * 100),
@@ -322,6 +323,15 @@ function makeTimedEvent(event: RawEvent, segmentStart: DateTime, segmentEnd: Dat
     left_pct: 0,
     width_pct: 100,
   };
+}
+
+function formatTimeRange(start: DateTime, end: DateTime): string {
+  return `${formatTime(start)} - ${formatTime(end)}`;
+}
+
+function formatTime(time: DateTime): string {
+  const format = time.minute === 0 ? "h a" : "h:mm a";
+  return time.toFormat(format).toLowerCase();
 }
 
 function layoutTimedEvents(events: TimedEvent[]): TimedEvent[] {

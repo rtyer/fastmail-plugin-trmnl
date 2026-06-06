@@ -1,0 +1,132 @@
+<div class="layout fcl-layout">
+  <div class="columns fcl-columns">
+    {% for day in days limit:5 %}
+      <div class="column fcl-column">
+        <div class="list fcl-list" data-list-limit="true" data-list-max-height="1120" data-list-hidden-count="true" data-list-max-columns="1">
+          <span class="label fcl-day-label {% if day.is_today %}fcl-today{% endif %}">{{ day.label }}</span>
+
+          {% assign event_index = 0 %}
+          {% for event in day.all_day_events %}
+            <div class="item fcl-item">
+              <div class="meta">
+                <span class="index">#</span>
+              </div>
+              <div class="content">
+                <span class="title title--small fcl-title">{{ event.title }}</span>
+                {% if show_calendar_names %}
+                  <span class="description fcl-description">{{ event.calendar }}</span>
+                {% endif %}
+                <div class="flex gap--xsmall">
+                  <span class="label label--small label--underline">all day</span>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+
+          {% for event in day.timed_events %}
+            {% assign event_index = event_index | plus: 1 %}
+            <div class="item fcl-item">
+              <div class="meta">
+                <span class="index">{{ event_index }}</span>
+              </div>
+              <div class="content">
+                <span class="title title--small fcl-title">{{ event.title }}</span>
+                {% if show_calendar_names %}
+                  <span class="description fcl-description">{{ event.calendar }}</span>
+                {% endif %}
+                <div class="flex gap--xsmall">
+                  <span class="label label--small label--underline">{{ event.time_label }}</span>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+
+          {% if day.all_day_events.size == 0 and day.timed_events.size == 0 %}
+            <div class="item fcl-item fcl-empty">
+              <div class="meta">
+                <span class="index">-</span>
+              </div>
+              <div class="content">
+                <span class="title title--small fcl-title">No events</span>
+                <span class="description fcl-description">Clear day</span>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="title_bar">
+  <img class="image" src="https://trmnl.com/images/plugins/trmnl--render.svg">
+  <span class="title">{{ trmnl.plugin_settings.instance_name | default: "Calendar" }}</span>
+  <span class="instance">{{ synced_label | default: "just now" }}</span>
+</div>
+
+<style>
+  .fcl-layout {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .fcl-columns {
+    height: 100%;
+    gap: 18px;
+  }
+
+  .fcl-column {
+    min-width: 0;
+  }
+
+  .fcl-list {
+    height: 100%;
+    min-width: 0;
+  }
+
+  .fcl-day-label {
+    display: inline-block;
+    margin-bottom: 12px;
+    padding: 4px 10px;
+    border: 2px solid #111;
+    border-radius: 12px;
+    font-size: 22px;
+    line-height: 26px;
+    white-space: nowrap;
+  }
+
+  .fcl-day-label.fcl-today {
+    color: #fff;
+    background: #111;
+  }
+
+  .fcl-item {
+    align-items: flex-start;
+    min-width: 0;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .fcl-title,
+  .fcl-description {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .fcl-title {
+    font-size: 21px;
+    line-height: 25px;
+  }
+
+  .fcl-description {
+    font-size: 16px;
+    line-height: 20px;
+  }
+
+  .fcl-empty {
+    opacity: 0.55;
+  }
+</style>

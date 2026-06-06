@@ -43,6 +43,7 @@ export type TimedEvent = {
   calendar: string;
   start: string;
   end: string;
+  time_label: string;
   start_minutes: number;
   end_minutes: number;
   top_pct: number;

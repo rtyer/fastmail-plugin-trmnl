@@ -1,0 +1,9 @@
+- keyname: visual_mode
+  field_type: select
+  name: Visual Mode
+  description: Choose which markup file to paste into the TRMNL editor.
+  options:
+  - Week Grid: week_grid
+  - Five Day List: five_day_list
+  default: week_grid
+
