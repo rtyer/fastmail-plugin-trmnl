@@ -220,6 +220,7 @@ Paste one of the TRMNL templates into the plugin markup editor and click **Force
 - [trmnl/week-grid-x.liquid](trmnl/week-grid-x.liquid): 5-day grid tuned for TRMNL X.
 - [trmnl/five-day-list-x.liquid](trmnl/five-day-list-x.liquid): TRMNL-framework-style 5-day list/columns view.
 - [trmnl/fastmail-calendar-x.liquid](trmnl/fastmail-calendar-x.liquid): Fastmail Calendar-style TRMNL X template with Default Agenda, Week Columns, and Week Grid visual modes.
+- [trmnl/daily-agenda-half-x.liquid](trmnl/daily-agenda-half-x.liquid): split-screen/50% TRMNL X daily agenda showing today only.
 
 Optional: paste [trmnl/form-fields.yml](trmnl/form-fields.yml) into Form Fields to choose a visual mode from TRMNL.
 

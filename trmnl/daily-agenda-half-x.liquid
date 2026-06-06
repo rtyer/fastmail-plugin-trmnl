@@ -1,0 +1,135 @@
+<div class="layout fdh-layout">
+  {% for day in days limit:1 %}
+    <div class="fdh-header">
+      <span class="label fdh-day {% if day.is_today %}fdh-today{% endif %}">{{ day.label }}</span>
+    </div>
+
+    <div class="list fdh-list" data-list-limit="true" data-list-max-height="560" data-list-hidden-count="true" data-list-max-columns="1">
+      {% for event in day.all_day_events %}
+        <div class="item fdh-item fdh-item--all-day">
+          <div class="content">
+            <span class="title title--small fdh-title">{{ event.title }}</span>
+          </div>
+        </div>
+      {% endfor %}
+
+      {% for event in day.timed_events %}
+        <div class="item fdh-item fdh-item--timed">
+          <div class="content">
+            <span class="fdh-time">{{ event.time_label }}</span>
+            <span class="title title--small fdh-title">{{ event.title }}</span>
+            {% if show_calendar_names %}
+              <span class="description fdh-description">{{ event.calendar }}</span>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+
+      {% if day.all_day_events.size == 0 and day.timed_events.size == 0 %}
+        <div class="item fdh-item fdh-empty">
+          <div class="content">
+            <span class="title title--small fdh-title">No events</span>
+            <span class="description fdh-description">Clear day</span>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>
+
+<div class="title_bar">
+  <img class="image" src="https://trmnl.com/images/plugins/trmnl--render.svg">
+  <span class="title">{{ trmnl.plugin_settings.instance_name | default: "Calendar" }}</span>
+  <span class="instance">{{ synced_label | default: "just now" }}</span>
+</div>
+
+<style>
+  .fdh-layout {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .fdh-header {
+    margin-bottom: 12px;
+  }
+
+  .fdh-day {
+    display: inline-block;
+    padding: 4px 10px;
+    border: 2px solid #111;
+    border-radius: 12px;
+    font-size: 26px;
+    line-height: 32px;
+    white-space: nowrap;
+  }
+
+  .fdh-day.fdh-today {
+    color: #fff;
+    background: #111;
+  }
+
+  .fdh-list {
+    min-width: 0;
+  }
+
+  .fdh-item {
+    align-items: flex-start;
+    min-width: 0;
+    padding: 10px 0;
+  }
+
+  .fdh-item .content {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .fdh-item--all-day {
+    padding: 4px 0 12px;
+  }
+
+  .fdh-item--all-day .fdh-title {
+    display: block;
+    width: 100%;
+    padding: 7px 10px;
+    border-radius: 10px;
+    background:
+      radial-gradient(#c8c8c8 1px, transparent 1px) 0 0 / 4px 4px,
+      #eee;
+    font-weight: 700;
+  }
+
+  .fdh-item--timed {
+    border-bottom: 2px dotted #c8c8c8;
+  }
+
+  .fdh-title,
+  .fdh-time,
+  .fdh-description {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .fdh-title {
+    font-size: 24px;
+    line-height: 29px;
+  }
+
+  .fdh-time {
+    color: #777;
+    font-size: 18px;
+    line-height: 22px;
+    font-weight: 600;
+  }
+
+  .fdh-description {
+    font-size: 17px;
+    line-height: 21px;
+  }
+
+  .fdh-empty {
+    opacity: 0.55;
+  }
+</style>
