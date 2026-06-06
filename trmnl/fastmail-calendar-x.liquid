@@ -8,30 +8,16 @@
           <div class="list fcal-list" data-list-limit="true" data-list-max-height="1120" data-list-hidden-count="true" data-list-max-columns="1">
             <span class="label fcal-day-label {% if day.is_today %}fcal-today{% endif %}">{{ day.label }}</span>
 
-            {% assign event_index = 0 %}
             {% for event in day.all_day_events %}
-              <div class="item fcal-item">
-                <div class="meta">
-                  <span class="index">#</span>
-                </div>
+              <div class="item fcal-item fcal-item--all-day">
                 <div class="content">
                   <span class="title title--small fcal-title">{{ event.title }}</span>
-                  {% if show_calendar_names %}
-                    <span class="description fcal-description">{{ event.calendar }}</span>
-                  {% endif %}
-                  <div class="flex gap--xsmall">
-                    <span class="label label--small label--underline">all day</span>
-                  </div>
                 </div>
               </div>
             {% endfor %}
 
             {% for event in day.timed_events %}
-              {% assign event_index = event_index | plus: 1 %}
-              <div class="item fcal-item">
-                <div class="meta">
-                  <span class="index">{{ event_index }}</span>
-                </div>
+              <div class="item fcal-item fcal-item--timed">
                 <div class="content">
                   <span class="description fcal-time">{{ event.time_label }}</span>
                   <span class="title title--small fcal-title">{{ event.title }}</span>
@@ -44,9 +30,6 @@
 
             {% if day.all_day_events.size == 0 and day.timed_events.size == 0 %}
               <div class="item fcal-item fcal-empty">
-                <div class="meta">
-                  <span class="index">-</span>
-                </div>
                 <div class="content">
                   <span class="title title--small fcal-title">No events</span>
                   <span class="description fcal-description">Clear day</span>
@@ -114,30 +97,16 @@
           <div class="list fcal-list" data-list-limit="true" data-list-max-height="1120" data-list-hidden-count="true" data-list-max-columns="1">
             <span class="label fcal-day-label {% if day.is_today %}fcal-today{% endif %}">{{ day.label }}</span>
 
-            {% assign event_index = 0 %}
             {% for event in day.all_day_events %}
-              <div class="item fcal-item">
-                <div class="meta">
-                  <span class="index">#</span>
-                </div>
+              <div class="item fcal-item fcal-item--all-day">
                 <div class="content">
                   <span class="title title--small fcal-title">{{ event.title }}</span>
-                  {% if show_calendar_names %}
-                    <span class="description fcal-description">{{ event.calendar }}</span>
-                  {% endif %}
-                  <div class="flex gap--xsmall">
-                    <span class="label label--small label--underline">all day</span>
-                  </div>
                 </div>
               </div>
             {% endfor %}
 
             {% for event in day.timed_events %}
-              {% assign event_index = event_index | plus: 1 %}
-              <div class="item fcal-item">
-                <div class="meta">
-                  <span class="index">{{ event_index }}</span>
-                </div>
+              <div class="item fcal-item fcal-item--timed">
                 <div class="content">
                   <span class="description fcal-time">{{ event.time_label }}</span>
                   <span class="title title--small fcal-title">{{ event.title }}</span>
@@ -150,9 +119,6 @@
 
             {% if day.all_day_events.size == 0 and day.timed_events.size == 0 %}
               <div class="item fcal-item fcal-empty">
-                <div class="meta">
-                  <span class="index">-</span>
-                </div>
                 <div class="content">
                   <span class="title title--small fcal-title">No events</span>
                   <span class="description fcal-description">Clear day</span>
@@ -215,8 +181,31 @@
   .fcal-item {
     align-items: flex-start;
     min-width: 0;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding: 10px 0;
+  }
+
+  .fcal-item .content {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .fcal-item--all-day {
+    padding: 4px 0 12px;
+  }
+
+  .fcal-item--all-day .fcal-title {
+    display: block;
+    width: 100%;
+    padding: 7px 10px;
+    border-radius: 10px;
+    background:
+      radial-gradient(#c8c8c8 1px, transparent 1px) 0 0 / 4px 4px,
+      #eee;
+    font-weight: 700;
+  }
+
+  .fcal-item--timed {
+    border-bottom: 2px dotted #c8c8c8;
   }
 
   .fcal-title,
