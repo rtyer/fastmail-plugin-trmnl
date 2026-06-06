@@ -10,7 +10,7 @@ The preferred source is Fastmail CalDAV: one Fastmail username plus an app-speci
 - Keeps published ICS URL support as a fallback mode.
 - Parses `VEVENT`, timed events, all-day events, multi-day events, recurrence rules, EXDATE/RECURRENCE-ID overrides, timezones, duplicate UIDs, and cancelled events.
 - Normalizes events into TRMNL-friendly JSON.
-- Supports `rolling_week`, `work_week`, and `three_day` layouts.
+- Supports `rolling_week`, `five_day`, `work_week`, and `three_day` layouts.
 - Clips timed events to configurable grid hours and lays overlapping events side-by-side.
 - Includes grayscale-friendly TRMNL Liquid/HTML/CSS in [trmnl/week-grid.liquid](trmnl/week-grid.liquid).
 
@@ -29,7 +29,7 @@ Set these environment variables on the backend:
 | `ICS_URLS` | required for ICS mode | Comma-separated published ICS URLs. |
 | `CALENDAR_NAMES` | `Calendar 1`, etc. | Comma-separated display names matching `ICS_URLS`. |
 | `TIMEZONE` | `America/Denver` | Display timezone. |
-| `VIEW_MODE` | `rolling_week` | `rolling_week`, `work_week`, `three_day`, or `agenda`. |
+| `VIEW_MODE` | `five_day` | `five_day`, `rolling_week`, `work_week`, `three_day`, or `agenda`. |
 | `START_HOUR` | `8` | First hour shown in timed grid. |
 | `END_HOUR` | `21` | Last hour boundary shown in timed grid. |
 | `SHOW_CALENDAR_NAMES` | `true` | Include calendar labels in event blocks. |
@@ -127,7 +127,7 @@ Non-secret defaults live in the `[vars]` section of [wrangler.toml](wrangler.tom
 [vars]
 SOURCE_MODE = "caldav"
 TIMEZONE = "America/Denver"
-VIEW_MODE = "rolling_week"
+VIEW_MODE = "five_day"
 START_HOUR = "8"
 END_HOUR = "21"
 ```
@@ -245,7 +245,7 @@ The `/events` and `/calendar` endpoints return:
   "synced_label": "just now",
   "source_mode": "caldav",
   "timezone": "America/Denver",
-  "view_mode": "rolling_week",
+  "view_mode": "five_day",
   "start_hour": 8,
   "end_hour": 21,
   "show_calendar_names": true,

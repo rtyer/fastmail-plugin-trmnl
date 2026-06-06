@@ -40,6 +40,23 @@ function payload(events: string, config: Partial<CalendarConfig> = {}) {
 }
 
 describe("calendar normalization", () => {
+  it("builds a rolling five-day range for the five_day view", () => {
+    const result = payload("", { viewMode: "five_day" });
+
+    expect(result.day_count).toBe(5);
+    expect(result.range).toEqual({
+      start: "2026-06-05",
+      end: "2026-06-09",
+    });
+    expect(result.days.map((day) => day.label)).toEqual([
+      "Fri 6/5",
+      "Sat 6/6",
+      "Sun 6/7",
+      "Mon 6/8",
+      "Tue 6/9",
+    ]);
+  });
+
   it("places all-day events in the all-day row", () => {
     const result = payload(`
 BEGIN:VEVENT

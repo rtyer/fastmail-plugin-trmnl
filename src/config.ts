@@ -1,7 +1,7 @@
 import { z } from "zod";
 import type { CalendarConfig, CalendarSource, SourceMode, ViewMode } from "./types.js";
 
-const viewModeSchema = z.enum(["rolling_week", "work_week", "three_day", "agenda"]);
+const viewModeSchema = z.enum(["rolling_week", "five_day", "work_week", "three_day", "agenda"]);
 const sourceModeSchema = z.enum(["caldav", "ics"]);
 
 function readString(value: unknown): string | undefined {
@@ -63,7 +63,7 @@ export function buildConfig(query: Record<string, unknown> = {}, env: ConfigEnv 
 
   const startHour = Math.max(0, Math.min(23, readNumber(query.start_hour ?? env.START_HOUR, 8)));
   const endHour = Math.max(startHour + 1, Math.min(24, readNumber(query.end_hour ?? env.END_HOUR, 21)));
-  const viewMode = viewModeSchema.catch("rolling_week").parse(query.view_mode ?? env.VIEW_MODE) as ViewMode;
+  const viewMode = viewModeSchema.catch("five_day").parse(query.view_mode ?? env.VIEW_MODE) as ViewMode;
 
   return {
     sourceMode,

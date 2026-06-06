@@ -118,6 +118,9 @@ function getRange(viewMode: CalendarConfig["viewMode"], now: DateTime): { start:
   if (viewMode === "work_week") {
     return { start: now.startOf("week").startOf("day"), dayCount: 5 };
   }
+  if (viewMode === "five_day") {
+    return { start: now.startOf("day"), dayCount: 5 };
+  }
   if (viewMode === "three_day") {
     return { start: now.startOf("day"), dayCount: 3 };
   }

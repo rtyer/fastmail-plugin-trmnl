@@ -1,5 +1,5 @@
 export type SourceMode = "caldav" | "ics";
-export type ViewMode = "rolling_week" | "work_week" | "three_day" | "agenda";
+export type ViewMode = "rolling_week" | "five_day" | "work_week" | "three_day" | "agenda";
 
 export type CalendarSource = {
   name: string;
