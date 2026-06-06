@@ -1,49 +1,49 @@
-<div class="screen">
-  <div class="topbar">
-    <div class="title">Calendar</div>
-    <div class="synced">Synced: {{ synced_label | default: "just now" }}</div>
+<div class="fc-screen">
+  <div class="fc-topbar">
+    <div class="fc-title">Calendar</div>
+    <div class="fc-synced">Synced: {{ synced_label | default: "just now" }}</div>
   </div>
 
-  <div class="week" style="--days: {{ day_count }};">
-    <div class="corner"></div>
+  <div class="fc-week" style="--days: {{ day_count }};">
+    <div class="fc-corner"></div>
     {% for day in days %}
-      <div class="day-head {% if day.is_today %}today{% endif %}">
+      <div class="fc-day-head {% if day.is_today %}fc-today{% endif %}">
         <span>{{ day.label }}</span>
       </div>
     {% endfor %}
 
-    <div class="all-day-label">all-day</div>
+    <div class="fc-all-day-label">all-day</div>
     {% for day in days %}
-      <div class="all-day-cell">
+      <div class="fc-all-day-cell">
         {% for event in day.all_day_events limit:2 %}
-          <div class="all-day-event">
+          <div class="fc-all-day-event">
             {% if show_calendar_names %}<b>{{ event.calendar }}</b> {% endif %}{{ event.title }}
           </div>
         {% endfor %}
         {% if day.all_day_events.size > 2 %}
-          <div class="more">+{{ day.all_day_events.size | minus: 2 }}</div>
+          <div class="fc-more">+{{ day.all_day_events.size | minus: 2 }}</div>
         {% endif %}
       </div>
     {% endfor %}
 
-    <div class="time-labels">
+    <div class="fc-time-labels">
       {% for hour in hours %}
-        <div class="hour-label" style="top: {{ hour.top_pct }}%;">{{ hour.label }}</div>
+        <div class="fc-hour-label" style="top: {{ hour.top_pct }}%;">{{ hour.label }}</div>
       {% endfor %}
     </div>
 
     {% for day in days %}
-      <div class="day-column">
+      <div class="fc-day-column">
         {% for hour in hours %}
-          <div class="hour-line" style="top: {{ hour.top_pct }}%;"></div>
+          <div class="fc-hour-line" style="top: {{ hour.top_pct }}%;"></div>
         {% endfor %}
         {% for event in day.timed_events %}
           <div
-            class="event"
+            class="fc-event"
             style="top: {{ event.top_pct }}%; height: {{ event.height_pct }}%; left: {{ event.left_pct }}%; width: {{ event.width_pct }}%;"
           >
-            <div class="event-title">{{ event.title }}</div>
-            {% if show_calendar_names %}<div class="event-cal">{{ event.calendar }}</div>{% endif %}
+            <div class="fc-event-title">{{ event.title }}</div>
+            {% if show_calendar_names %}<div class="fc-event-cal">{{ event.calendar }}</div>{% endif %}
           </div>
         {% endfor %}
       </div>
@@ -56,159 +56,169 @@
     box-sizing: border-box;
   }
 
-  .screen {
-    width: 800px;
-    height: 480px;
-    padding: 12px 14px;
+  .fc-screen {
+    width: 100%;
+    height: 100%;
+    min-height: 440px;
+    padding: 6px 8px;
     color: #111;
     background: #fff;
     font-family: Arial, Helvetica, sans-serif;
     overflow: hidden;
+    display: grid;
+    grid-template-rows: 28px minmax(0, 1fr);
+    gap: 0;
   }
 
-  .topbar {
-    height: 30px;
+  .fc-topbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
     border-bottom: 2px solid #111;
+    min-width: 0;
   }
 
-  .title {
+  .fc-title {
     font-size: 18px;
     font-weight: 700;
+    line-height: 22px;
   }
 
-  .synced {
+  .fc-synced {
     border: 1px solid #111;
     border-radius: 8px;
-    padding: 3px 8px;
-    font-size: 11px;
+    padding: 2px 7px;
+    font-size: 10px;
     font-weight: 700;
     white-space: nowrap;
   }
 
-  .week {
-    --time-width: 42px;
-    height: 426px;
+  .fc-week {
+    --time-width: 38px;
     display: grid;
     grid-template-columns: var(--time-width) repeat(var(--days), minmax(0, 1fr));
-    grid-template-rows: 38px 52px 1fr;
+    grid-template-rows: 28px 46px minmax(0, 1fr);
     border-left: 2px solid #111;
     border-bottom: 2px solid #111;
+    min-width: 0;
+    min-height: 0;
   }
 
-  .corner,
-  .day-head,
-  .all-day-label,
-  .all-day-cell,
-  .time-labels,
-  .day-column {
+  .fc-corner,
+  .fc-day-head,
+  .fc-all-day-label,
+  .fc-all-day-cell,
+  .fc-time-labels,
+  .fc-day-column {
     border-right: 1px solid #555;
+    min-width: 0;
   }
 
-  .corner,
-  .day-head {
+  .fc-corner,
+  .fc-day-head {
     border-bottom: 2px solid #111;
   }
 
-  .day-head {
+  .fc-day-head {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 4px;
-    font-size: 13px;
+    padding: 2px;
+    font-size: 11px;
     font-weight: 700;
+    line-height: 14px;
+    overflow: hidden;
+    white-space: nowrap;
   }
 
-  .day-head.today span {
+  .fc-day-head.fc-today span {
     color: #fff;
     background: #111;
     border-radius: 10px;
-    padding: 4px 8px;
+    padding: 3px 7px;
   }
 
-  .all-day-label {
+  .fc-all-day-label {
     border-bottom: 2px solid #111;
-    padding-top: 17px;
+    padding-top: 15px;
     text-align: center;
-    font-size: 9px;
+    font-size: 8px;
     font-weight: 700;
     text-transform: uppercase;
   }
 
-  .all-day-cell {
+  .fc-all-day-cell {
     border-bottom: 2px solid #111;
-    padding: 3px;
+    padding: 2px;
     overflow: hidden;
   }
 
-  .all-day-event,
-  .more {
-    height: 19px;
+  .fc-all-day-event,
+  .fc-more {
+    height: 17px;
     margin-bottom: 2px;
-    padding: 2px 4px;
+    padding: 1px 3px;
     border: 1px solid #111;
-    border-radius: 6px;
+    border-radius: 5px;
     background: #ddd;
-    font-size: 9px;
+    font-size: 8px;
     line-height: 13px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
   }
 
-  .more {
+  .fc-more {
     background: #fff;
     font-weight: 700;
     text-align: center;
   }
 
-  .time-labels,
-  .day-column {
+  .fc-time-labels,
+  .fc-day-column {
     position: relative;
     min-height: 0;
   }
 
-  .hour-label {
+  .fc-hour-label {
     position: absolute;
     right: 5px;
     transform: translateY(-50%);
     color: #222;
-    font-size: 9px;
+    font-size: 8px;
     font-weight: 700;
   }
 
-  .hour-line {
+  .fc-hour-line {
     position: absolute;
     left: 0;
     right: 0;
     border-top: 1px solid #c8c8c8;
   }
 
-  .event {
+  .fc-event {
     position: absolute;
-    min-height: 14px;
-    padding: 3px 4px;
+    min-height: 12px;
+    padding: 2px 3px;
     border: 1px solid #111;
-    border-radius: 6px;
+    border-radius: 5px;
     background: #cfcfcf;
     overflow: hidden;
   }
 
-  .event-title {
-    font-size: 10px;
-    line-height: 12px;
+  .fc-event-title {
+    font-size: 9px;
+    line-height: 10px;
     font-weight: 700;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  .event-cal {
+  .fc-event-cal {
     margin-top: 1px;
-    font-size: 8px;
-    line-height: 9px;
+    font-size: 7px;
+    line-height: 8px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
