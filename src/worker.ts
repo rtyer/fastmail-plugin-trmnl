@@ -149,7 +149,7 @@ async function readCalendarPayload(env: WorkerEnv, refreshFn: RefreshFn): Promis
 function payloadMatchesCurrentConfig(payload: CalendarPayload, env: WorkerEnv): boolean {
   const config = buildConfig({}, env);
   return (
-    payload.payload_schema_version === 2 &&
+    payload.payload_schema_version === 3 &&
     payload.source_mode === config.sourceMode &&
     payload.timezone === config.timezone &&
     payload.view_mode === config.viewMode &&
