@@ -63,6 +63,7 @@ export type CalendarDay = {
 };
 
 export type CalendarPayload = {
+  payload_schema_version: number;
   synced_at: string;
   synced_label: string;
   synced_ago_minutes: number;

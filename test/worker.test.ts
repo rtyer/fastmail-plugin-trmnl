@@ -46,6 +46,7 @@ function makeEnv(kv = new MemoryKV()): WorkerEnv {
 
 function makePayload(overrides: Partial<CalendarPayload> = {}): CalendarPayload {
   return {
+    payload_schema_version: 2,
     synced_at: "2026-06-05T22:00:00Z",
     synced_label: "just now",
     synced_ago_minutes: 0,
@@ -114,6 +115,23 @@ describe("worker endpoints", () => {
 
     expect(response.status).toBe(200);
     await expect(response.json()).resolves.toMatchObject({ view_mode: "five_day", day_count: 5 });
+  });
+
+  it("refreshes cached payloads from an older schema version", async () => {
+    const kv = new MemoryKV();
+    const env = makeEnv(kv);
+    const oldPayload = makePayload();
+    delete (oldPayload as Partial<CalendarPayload>).payload_schema_version;
+    await kv.put(cacheKey, JSON.stringify({ payload: oldPayload, refreshed_at: "2026-06-05T22:00:00Z" }));
+
+    const response = await handleRequest(getEventsRequest({ authorization: "Bearer poll-token" }), env, async () => ({
+      ok: true,
+      payload: makePayload({ day_count: 5 }),
+      refreshed_at: "2026-06-05T22:05:00Z",
+    }));
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toMatchObject({ payload_schema_version: 2, day_count: 5 });
   });
 
   it("refreshes synchronously when cache is missing", async () => {

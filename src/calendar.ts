@@ -94,6 +94,7 @@ export function buildCalendarPayloadFromIcs(
   }
 
   return {
+    payload_schema_version: 2,
     synced_at: zonedNow.toUTC().toISO({ suppressMilliseconds: true }) ?? zonedNow.toUTC().toISO() ?? "",
     synced_label: "just now",
     synced_ago_minutes: 0,
