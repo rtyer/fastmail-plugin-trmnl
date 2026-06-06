@@ -332,7 +332,7 @@ function formatTimeRange(start: DateTime, end: DateTime): string {
 
 function formatTime(time: DateTime): string {
   const format = time.minute === 0 ? "h a" : "h:mm a";
-  return time.toFormat(format).toLowerCase();
+  return time.toFormat(format);
 }
 
 function layoutTimedEvents(events: TimedEvent[]): TimedEvent[] {

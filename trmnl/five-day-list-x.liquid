@@ -30,13 +30,11 @@
                 <span class="index">{{ event_index }}</span>
               </div>
               <div class="content">
+                <span class="description fcl-time">{{ event.time_label }}</span>
                 <span class="title title--small fcl-title">{{ event.title }}</span>
                 {% if show_calendar_names %}
                   <span class="description fcl-description">{{ event.calendar }}</span>
                 {% endif %}
-                <div class="flex gap--xsmall">
-                  <span class="label label--small label--underline">{{ event.time_label }}</span>
-                </div>
               </div>
             </div>
           {% endfor %}
@@ -108,6 +106,7 @@
   }
 
   .fcl-title,
+  .fcl-time,
   .fcl-description {
     display: block;
     min-width: 0;
@@ -119,6 +118,13 @@
   .fcl-title {
     font-size: 21px;
     line-height: 25px;
+  }
+
+  .fcl-time {
+    color: #777;
+    font-size: 18px;
+    line-height: 22px;
+    font-weight: 600;
   }
 
   .fcl-description {

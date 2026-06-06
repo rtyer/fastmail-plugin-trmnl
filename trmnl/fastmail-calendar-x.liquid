@@ -33,13 +33,11 @@
                   <span class="index">{{ event_index }}</span>
                 </div>
                 <div class="content">
+                  <span class="description fcal-time">{{ event.time_label }}</span>
                   <span class="title title--small fcal-title">{{ event.title }}</span>
                   {% if show_calendar_names %}
                     <span class="description fcal-description">{{ event.calendar }}</span>
                   {% endif %}
-                  <div class="flex gap--xsmall">
-                    <span class="label label--small label--underline">{{ event.time_label }}</span>
-                  </div>
                 </div>
               </div>
             {% endfor %}
@@ -141,13 +139,11 @@
                   <span class="index">{{ event_index }}</span>
                 </div>
                 <div class="content">
+                  <span class="description fcal-time">{{ event.time_label }}</span>
                   <span class="title title--small fcal-title">{{ event.title }}</span>
                   {% if show_calendar_names %}
                     <span class="description fcal-description">{{ event.calendar }}</span>
                   {% endif %}
-                  <div class="flex gap--xsmall">
-                    <span class="label label--small label--underline">{{ event.time_label }}</span>
-                  </div>
                 </div>
               </div>
             {% endfor %}
@@ -224,6 +220,7 @@
   }
 
   .fcal-title,
+  .fcal-time,
   .fcal-description {
     display: block;
     min-width: 0;
@@ -235,6 +232,13 @@
   .fcal-title {
     font-size: 21px;
     line-height: 25px;
+  }
+
+  .fcal-time {
+    color: #777;
+    font-size: 18px;
+    line-height: 22px;
+    font-weight: 600;
   }
 
   .fcal-description {
