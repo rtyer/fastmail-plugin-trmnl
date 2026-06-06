@@ -132,15 +132,31 @@ export async function refreshCalendarCache(
 
 async function readCalendarPayload(env: WorkerEnv, refreshFn: RefreshFn): Promise<Response> {
   const cached = await tryReadCache(env);
-  if (cached?.payload) {
+  if (cached?.payload && payloadMatchesCurrentConfig(cached.payload, env)) {
     return jsonResponse(addSyncedLabel(cached.payload));
   }
 
   const refresh = await refreshFn(env);
   if (!refresh.ok) {
+    if (cached?.payload) {
+      return jsonResponse(addSyncedLabel(cached.payload));
+    }
     return jsonResponse({ error: refresh.error }, refresh.status);
   }
   return jsonResponse(addSyncedLabel(refresh.payload));
+}
+
+function payloadMatchesCurrentConfig(payload: CalendarPayload, env: WorkerEnv): boolean {
+  const config = buildConfig({}, env);
+  return (
+    payload.source_mode === config.sourceMode &&
+    payload.timezone === config.timezone &&
+    payload.view_mode === config.viewMode &&
+    payload.start_hour === config.startHour &&
+    payload.end_hour === config.endHour &&
+    payload.show_calendar_names === config.showCalendarNames &&
+    payload.free_busy_only === config.freeBusyOnly
+  );
 }
 
 async function readCalendarStatus(env: WorkerEnv, includeDetails: boolean): Promise<Response> {

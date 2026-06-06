@@ -40,6 +40,7 @@ function makeEnv(kv = new MemoryKV()): WorkerEnv {
     FASTMAIL_USERNAME: "person@example.com",
     FASTMAIL_APP_PASSWORD: "app-password",
     TIMEZONE: "America/Denver",
+    VIEW_MODE: "rolling_week",
   };
 }
 
@@ -98,6 +99,21 @@ describe("worker endpoints", () => {
       timezone: "America/Denver",
       days: [],
     });
+  });
+
+  it("refreshes cached payloads built for a different view mode", async () => {
+    const kv = new MemoryKV();
+    const env = { ...makeEnv(kv), VIEW_MODE: "five_day" };
+    await kv.put(cacheKey, JSON.stringify({ payload: makePayload({ view_mode: "rolling_week" }), refreshed_at: "2026-06-05T22:00:00Z" }));
+
+    const response = await handleRequest(getEventsRequest({ authorization: "Bearer poll-token" }), env, async () => ({
+      ok: true,
+      payload: makePayload({ view_mode: "five_day", day_count: 5 }),
+      refreshed_at: "2026-06-05T22:05:00Z",
+    }));
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toMatchObject({ view_mode: "five_day", day_count: 5 });
   });
 
   it("refreshes synchronously when cache is missing", async () => {
