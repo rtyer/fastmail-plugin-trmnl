@@ -19,13 +19,7 @@
             {% for event in day.timed_events %}
               <div class="item fcal-item fcal-item--timed">
                 <div class="content">
-                  <span class="fcal-time">
-                    {% if event.time_label %}
-                      {{ event.time_label }}
-                    {% else %}
-                      {{ event.start | date: "%-I:%M %p" }} - {{ event.end | date: "%-I:%M %p" }}
-                    {% endif %}
-                  </span>
+                  <span class="description fcal-time">{{ event.time_label }}</span>
                   <span class="title title--small fcal-title">{{ event.title }}</span>
                   {% if show_calendar_names %}
                     <span class="description fcal-description">{{ event.calendar }}</span>
@@ -114,13 +108,7 @@
             {% for event in day.timed_events %}
               <div class="item fcal-item fcal-item--timed">
                 <div class="content">
-                  <span class="fcal-time">
-                    {% if event.time_label %}
-                      {{ event.time_label }}
-                    {% else %}
-                      {{ event.start | date: "%-I:%M %p" }} - {{ event.end | date: "%-I:%M %p" }}
-                    {% endif %}
-                  </span>
+                  <span class="description fcal-time">{{ event.time_label }}</span>
                   <span class="title title--small fcal-title">{{ event.title }}</span>
                   {% if show_calendar_names %}
                     <span class="description fcal-description">{{ event.calendar }}</span>
