@@ -1,7 +1,6 @@
 <div class="fcx-screen">
   <div class="fcx-topbar">
     <div class="fcx-title">Calendar</div>
-    <div class="fcx-synced">Synced: {{ synced_label | default: "just now" }}</div>
   </div>
 
   <div class="fcx-week" style="--days: {{ day_count }};">
@@ -52,52 +51,49 @@
 </div>
 
 <style>
+  html,
+  body,
   * {
     box-sizing: border-box;
   }
 
-  .fcx-screen {
+  html,
+  body {
     width: 100%;
     height: 100%;
-    min-height: 900px;
-    padding: 16px 22px;
+    margin: 0;
+  }
+
+  .fcx-screen {
+    width: 100%;
+    height: 100vh;
+    padding: 18px 28px 20px;
     color: #111;
     background: #fff;
     font-family: Arial, Helvetica, sans-serif;
     overflow: hidden;
     display: grid;
-    grid-template-rows: 58px minmax(0, 1fr);
+    grid-template-rows: 76px minmax(0, 1fr);
   }
 
   .fcx-topbar {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    border-bottom: 5px solid #111;
     min-width: 0;
   }
 
   .fcx-title {
-    font-size: 42px;
-    line-height: 48px;
+    font-size: 54px;
+    line-height: 64px;
     font-weight: 800;
-  }
-
-  .fcx-synced {
-    border: 3px solid #111;
-    border-radius: 18px;
-    padding: 7px 18px;
-    font-size: 24px;
-    line-height: 28px;
-    font-weight: 800;
-    white-space: nowrap;
   }
 
   .fcx-week {
-    --time-width: 82px;
+    --time-width: 76px;
     display: grid;
     grid-template-columns: var(--time-width) repeat(var(--days), minmax(0, 1fr));
-    grid-template-rows: 72px 104px minmax(0, 1fr);
+    grid-template-rows: 80px 74px minmax(0, 1fr);
+    border-top: 5px solid #111;
     border-left: 5px solid #111;
     border-bottom: 5px solid #111;
     min-width: 0;
@@ -124,8 +120,8 @@
     align-items: center;
     justify-content: center;
     padding: 6px;
-    font-size: 28px;
-    line-height: 34px;
+    font-size: 34px;
+    line-height: 40px;
     font-weight: 800;
     overflow: hidden;
     white-space: nowrap;
@@ -134,15 +130,17 @@
   .fcx-day-head.fcx-today span {
     color: #fff;
     background: #111;
-    border-radius: 22px;
-    padding: 8px 18px;
+    border-radius: 24px;
+    padding: 8px 20px;
   }
 
   .fcx-all-day-label {
     border-bottom: 5px solid #111;
-    padding-top: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    font-size: 17px;
+    font-size: 18px;
     line-height: 20px;
     font-weight: 800;
     text-transform: uppercase;
@@ -150,19 +148,19 @@
 
   .fcx-all-day-cell {
     border-bottom: 5px solid #111;
-    padding: 7px;
+    padding: 8px 10px;
     overflow: hidden;
   }
 
   .fcx-all-day-event,
   .fcx-more {
-    height: 26px;
-    margin-bottom: 5px;
-    padding: 2px 8px;
-    border: 3px solid #111;
-    border-radius: 12px;
+    height: 24px;
+    margin-bottom: 4px;
+    padding: 1px 8px;
+    border: 2px solid #111;
+    border-radius: 11px;
     background: #ddd;
-    font-size: 18px;
+    font-size: 17px;
     line-height: 20px;
     overflow: hidden;
     white-space: nowrap;
@@ -183,11 +181,11 @@
 
   .fcx-hour-label {
     position: absolute;
-    right: 10px;
+    right: 12px;
     transform: translateY(-50%);
     color: #222;
-    font-size: 22px;
-    line-height: 26px;
+    font-size: 24px;
+    line-height: 28px;
     font-weight: 800;
   }
 
@@ -195,22 +193,22 @@
     position: absolute;
     left: 0;
     right: 0;
-    border-top: 2px solid #c4c4c4;
+    border-top: 2px solid #c8c8c8;
   }
 
   .fcx-event {
     position: absolute;
-    min-height: 28px;
-    padding: 6px 8px;
-    border: 3px solid #111;
-    border-radius: 12px;
+    min-height: 24px;
+    padding: 5px 8px;
+    border: 2px solid #111;
+    border-radius: 10px;
     background: #d0d0d0;
     overflow: hidden;
   }
 
   .fcx-event-title {
-    font-size: 21px;
-    line-height: 25px;
+    font-size: 20px;
+    line-height: 23px;
     font-weight: 800;
     white-space: nowrap;
     overflow: hidden;
@@ -218,9 +216,9 @@
   }
 
   .fcx-event-cal {
-    margin-top: 3px;
-    font-size: 17px;
-    line-height: 20px;
+    margin-top: 2px;
+    font-size: 15px;
+    line-height: 18px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
