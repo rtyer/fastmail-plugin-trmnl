@@ -230,7 +230,7 @@ where `merge_variables` contains the same payload returned by `/events`.
 
 1. Publish the backend somewhere TRMNL can reach it.
 2. Create a TRMNL private plugin that polls the backend JSON endpoint.
-3. Paste [trmnl/week-grid.liquid](trmnl/week-grid.liquid) into the plugin markup.
+3. Paste [trmnl/week-grid.liquid](trmnl/week-grid.liquid) into the plugin markup, or use [trmnl/week-grid-x.liquid](trmnl/week-grid-x.liquid) for TRMNL X.
 4. Set the plugin refresh interval to whatever is appropriate for the calendars.
 
 The template avoids client-side JavaScript and expects the backend JSON to provide precomputed day labels, hour markers, event positions, and overlap columns.
