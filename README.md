@@ -219,8 +219,9 @@ Paste one of the TRMNL templates into the plugin markup editor and click **Force
 - [trmnl/week-grid.liquid](trmnl/week-grid.liquid): compact week grid for the original TRMNL.
 - [trmnl/week-grid-x.liquid](trmnl/week-grid-x.liquid): 5-day grid tuned for TRMNL X.
 - [trmnl/five-day-list-x.liquid](trmnl/five-day-list-x.liquid): TRMNL-framework-style 5-day list/columns view.
+- [trmnl/fastmail-calendar-x.liquid](trmnl/fastmail-calendar-x.liquid): Fastmail Calendar-style TRMNL X template with Default Agenda, Week Columns, and Week Grid visual modes.
 
-Optional: paste [trmnl/form-fields.yml](trmnl/form-fields.yml) into Form Fields to keep track of the visual mode you chose.
+Optional: paste [trmnl/form-fields.yml](trmnl/form-fields.yml) into Form Fields to choose a visual mode from TRMNL.
 
 ### Optional TRMNL Webhook Push
 
@@ -236,7 +237,7 @@ where `merge_variables` contains the same payload returned by `/events`.
 
 1. Publish the backend somewhere TRMNL can reach it.
 2. Create a TRMNL private plugin that polls the backend JSON endpoint.
-3. Paste [trmnl/week-grid.liquid](trmnl/week-grid.liquid) into the plugin markup, use [trmnl/week-grid-x.liquid](trmnl/week-grid-x.liquid) for TRMNL X grid mode, or use [trmnl/five-day-list-x.liquid](trmnl/five-day-list-x.liquid) for a native TRMNL list/columns style.
+3. Paste [trmnl/week-grid.liquid](trmnl/week-grid.liquid) into the plugin markup, use [trmnl/week-grid-x.liquid](trmnl/week-grid-x.liquid) for TRMNL X grid mode, or use [trmnl/fastmail-calendar-x.liquid](trmnl/fastmail-calendar-x.liquid) for a Fastmail Calendar-style TRMNL X template with visual modes.
 4. Set the plugin refresh interval to whatever is appropriate for the calendars.
 
 The template avoids client-side JavaScript and expects the backend JSON to provide precomputed day labels, hour markers, event positions, and overlap columns.

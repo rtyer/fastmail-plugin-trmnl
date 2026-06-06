@@ -1,0 +1,389 @@
+{% assign visual_mode = trmnl.plugin_settings.custom_fields_values.visual_mode | default: "week_columns" %}
+
+{% if visual_mode == "default_agenda" %}
+  <div class="layout fcal-layout">
+    <div class="columns fcal-columns fcal-columns--default">
+      {% for day in days limit:3 %}
+        <div class="column fcal-column">
+          <div class="list fcal-list" data-list-limit="true" data-list-max-height="1120" data-list-hidden-count="true" data-list-max-columns="1">
+            <span class="label fcal-day-label {% if day.is_today %}fcal-today{% endif %}">{{ day.label }}</span>
+
+            {% assign event_index = 0 %}
+            {% for event in day.all_day_events %}
+              <div class="item fcal-item">
+                <div class="meta">
+                  <span class="index">#</span>
+                </div>
+                <div class="content">
+                  <span class="title title--small fcal-title">{{ event.title }}</span>
+                  {% if show_calendar_names %}
+                    <span class="description fcal-description">{{ event.calendar }}</span>
+                  {% endif %}
+                  <div class="flex gap--xsmall">
+                    <span class="label label--small label--underline">all day</span>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+
+            {% for event in day.timed_events %}
+              {% assign event_index = event_index | plus: 1 %}
+              <div class="item fcal-item">
+                <div class="meta">
+                  <span class="index">{{ event_index }}</span>
+                </div>
+                <div class="content">
+                  <span class="title title--small fcal-title">{{ event.title }}</span>
+                  {% if show_calendar_names %}
+                    <span class="description fcal-description">{{ event.calendar }}</span>
+                  {% endif %}
+                  <div class="flex gap--xsmall">
+                    <span class="label label--small label--underline">{{ event.time_label }}</span>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+
+            {% if day.all_day_events.size == 0 and day.timed_events.size == 0 %}
+              <div class="item fcal-item fcal-empty">
+                <div class="meta">
+                  <span class="index">-</span>
+                </div>
+                <div class="content">
+                  <span class="title title--small fcal-title">No events</span>
+                  <span class="description fcal-description">Clear day</span>
+                </div>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% elsif visual_mode == "week_grid" %}
+  <div class="layout fcal-layout fcal-grid-layout">
+    <div class="fcal-grid" style="--days: {{ day_count }};">
+      <div class="fcal-corner"></div>
+      {% for day in days limit:5 %}
+        <div class="fcal-day-head {% if day.is_today %}fcal-today-head{% endif %}">
+          <span>{{ day.label }}</span>
+        </div>
+      {% endfor %}
+
+      <div class="fcal-all-day-label">all-day</div>
+      {% for day in days limit:5 %}
+        <div class="fcal-all-day-cell">
+          {% for event in day.all_day_events limit:2 %}
+            <div class="fcal-all-day-event">
+              {% if show_calendar_names %}<b>{{ event.calendar }}</b> {% endif %}{{ event.title }}
+            </div>
+          {% endfor %}
+          {% if day.all_day_events.size > 2 %}
+            <div class="fcal-more">+{{ day.all_day_events.size | minus: 2 }}</div>
+          {% endif %}
+        </div>
+      {% endfor %}
+
+      <div class="fcal-time-labels">
+        {% for hour in hours %}
+          <div class="fcal-hour-label" style="top: {{ hour.top_pct }}%;">{{ hour.label }}</div>
+        {% endfor %}
+      </div>
+
+      {% for day in days limit:5 %}
+        <div class="fcal-day-column">
+          {% for hour in hours %}
+            <div class="fcal-hour-line" style="top: {{ hour.top_pct }}%;"></div>
+          {% endfor %}
+          {% for event in day.timed_events %}
+            <div
+              class="fcal-event"
+              style="top: {{ event.top_pct }}%; height: {{ event.height_pct }}%; left: {{ event.left_pct }}%; width: {{ event.width_pct }}%;"
+            >
+              <div class="fcal-event-title">{{ event.title }}</div>
+              {% if show_calendar_names %}<div class="fcal-event-cal">{{ event.calendar }}</div>{% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% else %}
+  <div class="layout fcal-layout">
+    <div class="columns fcal-columns">
+      {% for day in days limit:5 %}
+        <div class="column fcal-column">
+          <div class="list fcal-list" data-list-limit="true" data-list-max-height="1120" data-list-hidden-count="true" data-list-max-columns="1">
+            <span class="label fcal-day-label {% if day.is_today %}fcal-today{% endif %}">{{ day.label }}</span>
+
+            {% assign event_index = 0 %}
+            {% for event in day.all_day_events %}
+              <div class="item fcal-item">
+                <div class="meta">
+                  <span class="index">#</span>
+                </div>
+                <div class="content">
+                  <span class="title title--small fcal-title">{{ event.title }}</span>
+                  {% if show_calendar_names %}
+                    <span class="description fcal-description">{{ event.calendar }}</span>
+                  {% endif %}
+                  <div class="flex gap--xsmall">
+                    <span class="label label--small label--underline">all day</span>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+
+            {% for event in day.timed_events %}
+              {% assign event_index = event_index | plus: 1 %}
+              <div class="item fcal-item">
+                <div class="meta">
+                  <span class="index">{{ event_index }}</span>
+                </div>
+                <div class="content">
+                  <span class="title title--small fcal-title">{{ event.title }}</span>
+                  {% if show_calendar_names %}
+                    <span class="description fcal-description">{{ event.calendar }}</span>
+                  {% endif %}
+                  <div class="flex gap--xsmall">
+                    <span class="label label--small label--underline">{{ event.time_label }}</span>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+
+            {% if day.all_day_events.size == 0 and day.timed_events.size == 0 %}
+              <div class="item fcal-item fcal-empty">
+                <div class="meta">
+                  <span class="index">-</span>
+                </div>
+                <div class="content">
+                  <span class="title title--small fcal-title">No events</span>
+                  <span class="description fcal-description">Clear day</span>
+                </div>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}
+
+<div class="title_bar">
+  <img class="image" src="https://trmnl.com/images/plugins/trmnl--render.svg">
+  <span class="title">{{ trmnl.plugin_settings.instance_name | default: "Fastmail Calendar" }}</span>
+  <span class="instance">{{ synced_label | default: "just now" }}</span>
+</div>
+
+<style>
+  .fcal-layout {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .fcal-columns {
+    height: 100%;
+    gap: 18px;
+  }
+
+  .fcal-columns--default {
+    gap: 26px;
+  }
+
+  .fcal-column {
+    min-width: 0;
+  }
+
+  .fcal-list {
+    height: 100%;
+    min-width: 0;
+  }
+
+  .fcal-day-label {
+    display: inline-block;
+    margin-bottom: 12px;
+    padding: 4px 10px;
+    border: 2px solid #111;
+    border-radius: 12px;
+    font-size: 22px;
+    line-height: 26px;
+    white-space: nowrap;
+  }
+
+  .fcal-day-label.fcal-today {
+    color: #fff;
+    background: #111;
+  }
+
+  .fcal-item {
+    align-items: flex-start;
+    min-width: 0;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .fcal-title,
+  .fcal-description {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .fcal-title {
+    font-size: 21px;
+    line-height: 25px;
+  }
+
+  .fcal-description {
+    font-size: 16px;
+    line-height: 20px;
+  }
+
+  .fcal-empty {
+    opacity: 0.55;
+  }
+
+  .fcal-grid-layout {
+    padding: 4px 0;
+  }
+
+  .fcal-grid {
+    --time-width: 76px;
+    height: 100%;
+    display: grid;
+    grid-template-columns: var(--time-width) repeat(5, minmax(0, 1fr));
+    grid-template-rows: 76px 70px minmax(0, 1fr);
+    border-top: 5px solid #111;
+    border-left: 5px solid #111;
+    border-bottom: 5px solid #111;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  .fcal-corner,
+  .fcal-day-head,
+  .fcal-all-day-label,
+  .fcal-all-day-cell,
+  .fcal-time-labels,
+  .fcal-day-column {
+    border-right: 3px solid #555;
+    min-width: 0;
+  }
+
+  .fcal-corner,
+  .fcal-day-head {
+    border-bottom: 5px solid #111;
+  }
+
+  .fcal-day-head {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    font-size: 32px;
+    line-height: 38px;
+    font-weight: 800;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .fcal-day-head.fcal-today-head span {
+    color: #fff;
+    background: #111;
+    border-radius: 22px;
+    padding: 7px 18px;
+  }
+
+  .fcal-all-day-label {
+    border-bottom: 5px solid #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 18px;
+    line-height: 20px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .fcal-all-day-cell {
+    border-bottom: 5px solid #111;
+    padding: 8px 10px;
+    overflow: hidden;
+  }
+
+  .fcal-all-day-event,
+  .fcal-more {
+    height: 24px;
+    margin-bottom: 4px;
+    padding: 1px 8px;
+    border: 2px solid #111;
+    border-radius: 11px;
+    background: #ddd;
+    font-size: 17px;
+    line-height: 20px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .fcal-more {
+    background: #fff;
+    font-weight: 800;
+    text-align: center;
+  }
+
+  .fcal-time-labels,
+  .fcal-day-column {
+    position: relative;
+    min-height: 0;
+  }
+
+  .fcal-hour-label {
+    position: absolute;
+    right: 12px;
+    transform: translateY(-50%);
+    color: #222;
+    font-size: 23px;
+    line-height: 27px;
+    font-weight: 800;
+  }
+
+  .fcal-hour-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    border-top: 2px solid #c8c8c8;
+  }
+
+  .fcal-event {
+    position: absolute;
+    min-height: 24px;
+    padding: 5px 8px;
+    border: 2px solid #111;
+    border-radius: 10px;
+    background: #d0d0d0;
+    overflow: hidden;
+  }
+
+  .fcal-event-title {
+    font-size: 20px;
+    line-height: 23px;
+    font-weight: 800;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .fcal-event-cal {
+    margin-top: 2px;
+    font-size: 15px;
+    line-height: 18px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+</style>
