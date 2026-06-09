@@ -6,7 +6,7 @@ compatibility_flags = ["nodejs_compat"]
 [vars]
 SOURCE_MODE = "caldav"
 TIMEZONE = "America/Denver"
-VIEW_MODE = "rolling_week"
+VIEW_MODE = "five_day"
 START_HOUR = "8"
 END_HOUR = "21"
 SHOW_CALENDAR_NAMES = "true"
