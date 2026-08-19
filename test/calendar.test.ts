@@ -141,6 +141,35 @@ END:VEVENT
     ]);
   });
 
+  it("expands timezone-aware recurrence overrides", () => {
+    const result = payload(`
+BEGIN:VEVENT
+UID:rrule-override-1
+DTSTAMP:20260601T120000Z
+SUMMARY:Practice
+DTSTART;TZID=America/Denver:20260605T090000
+DTEND;TZID=America/Denver:20260605T093000
+RRULE:FREQ=DAILY;COUNT=3
+END:VEVENT
+BEGIN:VEVENT
+UID:rrule-override-1
+DTSTAMP:20260601T120000Z
+RECURRENCE-ID;TZID=America/Denver:20260606T090000
+SUMMARY:Moved practice
+DTSTART;TZID=America/Denver:20260606T103000
+DTEND;TZID=America/Denver:20260606T110000
+END:VEVENT
+`);
+
+    expect(result.days[1].timed_events).toMatchObject([
+      {
+        title: "Moved practice",
+        start_minutes: 630,
+        end_minutes: 660,
+      },
+    ]);
+  });
+
   it("converts timed events from their source timezone to the display timezone", () => {
     const result = payload(`
 BEGIN:VEVENT

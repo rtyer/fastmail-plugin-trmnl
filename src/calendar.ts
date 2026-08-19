@@ -167,6 +167,14 @@ function parseFeed(feed: IcsFeed, config: CalendarConfig, from: DateTime, to: Da
       continue;
     }
 
+    // node-ical attaches timezone metadata as a non-writable property. Its
+    // recurrence expander later assigns that metadata back onto override
+    // DTSTART values. That assignment is ignored in non-strict Node runtimes,
+    // but throws in Cloudflare Workers' strict bundle when target and source
+    // are the same Date. Make the parser-owned metadata writable before
+    // expansion; the timestamp itself is unchanged.
+    makeEventDateMetadataWritable(event);
+
     const instances = event.rrule
       ? ical.expandRecurringEvent(event, {
           from: from.toJSDate(),
@@ -186,6 +194,35 @@ function parseFeed(feed: IcsFeed, config: CalendarConfig, from: DateTime, to: Da
   }
 
   return rawEvents.filter((event) => event.end > from && event.start < to);
+}
+
+function makeEventDateMetadataWritable(event: VEvent): void {
+  makeDateMetadataWritable(event.start);
+  makeDateMetadataWritable(event.end);
+  makeDateMetadataWritable(event.recurrenceid);
+
+  for (const excluded of Object.values(event.exdate ?? {})) {
+    makeDateMetadataWritable(excluded);
+  }
+
+  for (const recurrence of Object.values(event.recurrences ?? {})) {
+    makeDateMetadataWritable(recurrence.start);
+    makeDateMetadataWritable(recurrence.end);
+    makeDateMetadataWritable(recurrence.recurrenceid);
+  }
+}
+
+function makeDateMetadataWritable(value: unknown): void {
+  if (!(value instanceof Date)) {
+    return;
+  }
+
+  for (const key of ["tz", "dateOnly"] as const) {
+    const descriptor = Object.getOwnPropertyDescriptor(value, key);
+    if (descriptor && descriptor.configurable && descriptor.writable === false) {
+      Object.defineProperty(value, key, { ...descriptor, writable: true });
+    }
+  }
 }
 
 function isVEvent(value: unknown): value is VEvent {

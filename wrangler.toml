@@ -1,5 +1,6 @@
 name = "fastmail-plugin-trmnl"
 main = "src/worker.ts"
+workers_dev = true
 compatibility_date = "2025-12-01"
 compatibility_flags = ["nodejs_compat"]
 
@@ -15,7 +16,7 @@ FETCH_TIMEOUT_MS = "10000"
 
 [[kv_namespaces]]
 binding = "CALENDAR_CACHE"
-id = "replace-with-calendar-cache-kv-id"
+id = "da680b9732c044ac90c5d5535be251da"
 
 [triggers]
 crons = ["*/30 * * * *"]

@@ -18,6 +18,7 @@ export interface WorkerEnv extends ConfigEnv {
 type CacheError = {
   message: string;
   at: string;
+  stack?: string;
 };
 
 type CachedCalendar = {
@@ -119,12 +120,12 @@ export async function refreshCalendarCache(
     if (existing?.payload) {
       await tryWriteCache(env, {
         ...existing,
-        error: { message: safeError, at: new Date().toISOString() },
+        error: { message: safeError, at: new Date().toISOString(), stack: sanitizedStack(error) },
       });
       return { ok: false, status: 502, error: "Refresh failed; preserved the previous cached calendar." };
     }
     await tryWriteCache(env, {
-      error: { message: safeError, at: new Date().toISOString() },
+      error: { message: safeError, at: new Date().toISOString(), stack: sanitizedStack(error) },
     });
     return { ok: false, status: 503, error: "Calendar cache is unavailable." };
   }
@@ -175,6 +176,7 @@ async function readCalendarStatus(env: WorkerEnv, includeDetails: boolean): Prom
     ...(includeDetails
       ? {
           last_refresh_error: cached?.error?.message ?? null,
+          last_refresh_error_stack: cached?.error?.stack ?? null,
           webhook_error: cached?.webhook_error?.message ?? null,
         }
       : {}),
@@ -266,6 +268,13 @@ function sanitizeError(error: unknown): string {
     .replace(/https?:\/\/\S+/g, "[redacted-url]")
     .replace(/Basic\s+[A-Za-z0-9+/=._-]+/gi, "Basic [redacted]")
     .slice(0, 240);
+}
+
+function sanitizedStack(error: unknown): string | undefined {
+  if (!(error instanceof Error) || !error.stack) {
+    return undefined;
+  }
+  return error.stack.replace(/https?:\/\/\S+/g, "[redacted-url]").slice(0, 1600);
 }
 
 function jsonResponse(body: unknown, status = 200): Response {
